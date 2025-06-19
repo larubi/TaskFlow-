@@ -1,5 +1,5 @@
 # Usa una imagen base de Java optimizada para Spring Boot
-FROM eclipse-temurin:21-jdk-jammy AS build
+FROM eclipse-temurin:22-jdk-jammy AS build
 
 # Establece el directorio de trabajo dentro del contenedor
 WORKDIR /app
@@ -20,7 +20,7 @@ RUN chmod +x ./gradlew
 RUN ./gradlew bootJar --no-daemon
 
 # --- Segunda etapa: Imagen final ligera para la aplicación ---
-FROM eclipse-temurin:21-jre-jammy
+FROM eclipse-temurin:22-jre-jammy
 
 # Establece el directorio de trabajo
 WORKDIR /app

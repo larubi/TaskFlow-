@@ -1,40 +1,62 @@
-HELP.md
+README.md
+# Archivos de build y directorios
 .gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
+/build/
+/out/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
-
-### IntelliJ IDEA ###
-.idea
-*.iws
+# Archivos de IntelliJ IDEA
+.idea/
 *.iml
 *.ipr
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
+*.iws
+.project
+.classpath
+.settings/
+.springBeans
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+# Dependencias del proyecto
+/target/
+/lib/
+/bin/
 
-### VS Code ###
+# Archivos de logs
+*.log
+logs/
+
+# Archivos de caché de IDE
 .vscode/
+*.code-workspace
+.DS_Store # macOS
+Thumbs.db # Windows
 
-# VS generated files (for Visual Studio, not just VS Code)
-.vs/
+# Directorio de clases y paquetes de desarrollo (si tu IDE los crea fuera de build/)
+/bin/
+/gen/
+
+# Archivos del Docker
+!**/src/main/**/Dockerfile # Asegura que el Dockerfile sí se incluya
+!**/src/test/**/Dockerfile # Si tienes Dockerfiles de test
+
+# Spring Boot Devtools (si lo usas)
+.rebel.xml
+*.pyc
+*.class
+
+# Dependencias de Maven (si las usaras en el futuro)
+.m2/
+
+# Archivos generados por Spring Boot (si usas run.local, etc.)
+*.jar
+*.war
+*.ear
+
+# Datos de H2 (si se generan fuera de target/build)
+*.mv.db
+*.trace.db
+
+# Archivos específicos de Docker que a veces se generan
+.dockerignore
+
+# Directorios de compilación y ejecución de Gradle
+.gradle/
+build/

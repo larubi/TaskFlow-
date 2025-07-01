@@ -5,7 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest
-@TestPropertySource(properties = { // <--- Añade esta anotación
+@TestPropertySource(properties = {
 		"jwt.secret=secretoparatestsmuylargoaleatorioyseguroparalaaplicacion",
 		"jwt.expiration=18000000"
 })

@@ -39,7 +39,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
-            // ¡NUEVO!: Inyectamos UserDetailsService y JwtRequestFilter como parámetros del método @Bean
+            // Inyectamos UserDetailsService y JwtRequestFilter como parámetros del método @Bean
             // Esto permite que Spring los resuelva de forma diferente y rompa el ciclo
             UserDetailsService jwtUserDetailsService, // Spring encontrará el bean de JwtUserDetailsService
             JwtRequestFilter jwtRequestFilter) throws Exception { // Spring encontrará el bean de JwtRequestFilter
@@ -80,7 +80,7 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    // ¡NUEVO!: Este bean también necesita el UserDetailsService. Lo pasamos como parámetro aquí también.
+    // Este bean también necesita el UserDetailsService. Lo pasamos como parámetro aquí también.
     @Bean
     public DaoAuthenticationProvider authenticationProvider(UserDetailsService jwtUserDetailsService) {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();

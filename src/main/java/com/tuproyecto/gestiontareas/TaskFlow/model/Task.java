@@ -51,7 +51,6 @@ public class Task {
         this.lastModifiedDate = LocalDateTime.now();
     }
 
-    // Podrías añadir un @PreUpdate si también quieres una fecha de última actualización
     @PreUpdate
     protected void onUpdate() {
        this.lastModifiedDate = LocalDateTime.now();

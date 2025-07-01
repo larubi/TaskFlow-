@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # Servicio para tu aplicación Spring Boot
+  # Servicio para app Spring Boot
   app:
     build:
       context: . # Usa el Dockerfile en el directorio actual

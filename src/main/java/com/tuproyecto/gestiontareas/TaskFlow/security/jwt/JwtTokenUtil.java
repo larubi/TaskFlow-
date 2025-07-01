@@ -26,7 +26,7 @@ public class JwtTokenUtil {
     @Value("${jwt.expiration}")
     private long jwtExpiration;
 
-    // --- Métodos para generar JWT ---
+    //  Métodos para generar JWT
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
@@ -43,7 +43,7 @@ public class JwtTokenUtil {
                 .compact();
     }
 
-    // --- Métodos para validar JWT ---
+    //  Métodos para validar JWT
 
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
@@ -54,7 +54,7 @@ public class JwtTokenUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    // --- Métodos para extraer información del JWT ---
+    //  Métodos para extraer información del JWT
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -77,7 +77,7 @@ public class JwtTokenUtil {
                 .getBody();
     }
 
-    // --- Clave de firma ---
+    // Clave de firma
 
     private Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);

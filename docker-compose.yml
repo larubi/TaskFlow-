@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  # Servicio para tu aplicación Spring Boot
+  app:
+    build:
+      context: . # Usa el Dockerfile en el directorio actual
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080" # Mapea el puerto 8080 del host al puerto 8080 del contenedor
+    environment:
+      # Variables de entorno para que Spring Boot se conecte a PostgreSQL
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/taskdb
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update # Para que JPA cree/actualice las tablas en la DB
+      JWT_SECRET: ${JWT_SECRET} # Usaremos una variable de entorno para el secreto JWT
+      JWT_EXPIRATION: ${JWT_EXPIRATION} # Y otra para la expiración
+      SPRING_MAIN_ALLOW_CIRCULAR_REFERENCES: true # Mantenemos esto por si acaso, aunque ya debería estar en properties
+
+    depends_on:
+      - db # Asegura que el servicio 'db' se inicie antes que 'app'
+    networks:
+      - taskflow-network
+
+  # Servicio para la base de datos PostgreSQL
+  db:
+    image: postgres:15-alpine # Usamos una imagen oficial de PostgreSQL (versión 15, ligera)
+    environment:
+      POSTGRES_DB: taskdb # Nombre de la base de datos
+      POSTGRES_USER: user # Usuario de la base de datos
+      POSTGRES_PASSWORD: password # Contraseña del usuario
+    volumes:
+      - db-data:/var/lib/postgresql/data # Persistencia de datos para PostgreSQL
+    networks:
+      - taskflow-network
+    ports:
+      - "5432:5432" # Expone el puerto de PostgreSQL (opcional, útil para acceder desde clientes externos)
+
+volumes:
+  db-data: # Define el volumen para la persistencia de datos de PostgreSQL
+
+networks:
+  taskflow-network: # Define una red personalizada para que los servicios puedan comunicarse entre sí
+    driver: bridge

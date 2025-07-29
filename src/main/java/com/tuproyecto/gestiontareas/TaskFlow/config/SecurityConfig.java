@@ -2,10 +2,9 @@ package com.tuproyecto.gestiontareas.TaskFlow.config;
 
 import com.tuproyecto.gestiontareas.TaskFlow.security.jwt.JwtAuthenticationEntryPoint;
 import com.tuproyecto.gestiontareas.TaskFlow.security.jwt.JwtRequestFilter;
-import org.springframework.beans.factory.annotation.Autowired; // Mantener para JwtAuthenticationEntryPoint
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy; // Mantener esta importación
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
@@ -14,7 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService; // Mantener esta importación
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -48,24 +47,32 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/authenticate").permitAll() // Permite el endpoint de autenticación
-                        .requestMatchers("/api/**").authenticated()
+                        // 1. URLs de acceso público que no requieren autenticación
+                        .requestMatchers("/api/auth/login").permitAll() // Endpoint de autenticación
+                        .requestMatchers("/api/auth/register").permitAll()   // Endpoint de registro
                         .requestMatchers(
-                                "/swagger-ui.html",
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/webjars/**",
-                                "/api-docs/**"
+                                "/swagger-ui.html",    // Página principal de Swagger UI
+                                "/swagger-ui/**",      // Recursos estáticos de Swagger UI
+                                "/v3/api-docs/**",     // Endpoint de la especificación OpenAPI v3
+                                "/webjars/**",         // Recursos de Webjars (comúnmente usados por Swagger)
+                                "/api-docs/**"         // Otros endpoints de docs de API (versiones anteriores)
                         ).permitAll() // Permite el acceso a la documentación de Swagger/OpenAPI
-                        .anyRequest().authenticated()// Cualquier otra petición requiere autenticación
+
+                        // Para que H2 Console sea público solo para desarrollo
+                        .requestMatchers("/h2-console/**").permitAll()
+
+                        // 2. URLs que requieren autenticación
+                        .requestMatchers("/api/**").authenticated() // Todas las peticiones por debajo, requieren autenticación
+
+                        // 3. Cualquier otra petición que no haya sido casada por las reglas anteriores
+                        .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         http.httpBasic(AbstractHttpConfigurer::disable);
-        http.headers(headers -> headers.frameOptions(Customizer.withDefaults()).disable());
+        http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
 
         return http.build();
     }

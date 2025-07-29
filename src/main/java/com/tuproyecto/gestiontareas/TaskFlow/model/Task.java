@@ -13,7 +13,7 @@ import java.time.LocalDateTime; // Para la fecha de creación/actualización
  * Se mapeará a una tabla en la base de datos.
  */
 @Entity // Indica que esta clase es una entidad JPA y se mapeará a una tabla de BD.
-@Table(name = "tasks") // Opcional: Define el nombre de la tabla en la BD. Si no se especifica, usa el nombre de la clase.
+@Table(name = "tasks") // Define el nombre de la tabla en la BD. Si no se especifica, usa el nombre de la clase.
 @Getter // Anotación de Lombok para generar automáticamente los getters para todos los campos.
 @Setter // Anotación de Lombok para generar automáticamente los setters para todos los campos.
 @NoArgsConstructor // Anotación de Lombok para generar un constructor sin argumentos. Requerido por JPA.

@@ -12,7 +12,7 @@ services:
       # Variables de entorno para que Spring Boot se conecte a PostgreSQL
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/taskdb
       SPRING_DATASOURCE_USERNAME: user
-      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_DATASOURCE_PASSWORD: mytestpassword
       SPRING_JPA_HIBERNATE_DDL_AUTO: update # Para que JPA cree/actualice las tablas en la DB
       JWT_SECRET: ${JWT_SECRET} # Usaremos una variable de entorno para el secreto JWT
       JWT_EXPIRATION: ${JWT_EXPIRATION} # Y otra para la expiración
@@ -29,7 +29,7 @@ services:
     environment:
       POSTGRES_DB: taskdb # Nombre de la base de datos
       POSTGRES_USER: user # Usuario de la base de datos
-      POSTGRES_PASSWORD: password # Contraseña del usuario
+      POSTGRES_PASSWORD: mytestpassword # Contraseña del usuario
     volumes:
       - db-data:/var/lib/postgresql/data # Persistencia de datos para PostgreSQL
     networks:

@@ -1,11 +1,19 @@
 package com.tuproyecto.gestiontareas.TaskFlow.controller;
 
+
 import com.tuproyecto.gestiontareas.TaskFlow.security.jwt.dto.JwtRequest;
 import com.tuproyecto.gestiontareas.TaskFlow.security.jwt.dto.JwtResponse;
 
 // Importaciones para clases JWT específicas
 import com.tuproyecto.gestiontareas.TaskFlow.security.jwt.JwtTokenUtil;
 import com.tuproyecto.gestiontareas.TaskFlow.service.JwtUserDetailsService;
+
+// Importaciones para el registro
+import com.tuproyecto.gestiontareas.TaskFlow.security.jwt.dto.RegisterRequest; // Importa el nuevo DTO de registro
+import com.tuproyecto.gestiontareas.TaskFlow.service.AuthService; // Importa el nuevo AuthService
+import jakarta.validation.Valid; // Importa @Valid para la validación del DTO
+import org.springframework.http.HttpStatus; // Importa HttpStatus para ResponseEntity.status(HttpStatus.CREATED)
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +25,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * Controlador REST para la autenticación de usuarios y generación de JWT.
+ * Controlador REST para la autenticación de usuarios, registro y generación de JWT.
  */
 @RestController
 @CrossOrigin // Permite solicitudes desde otros orígenes (frontend, etc.)
-@RequestMapping("/authenticate") // La URL base para este controlador
+@RequestMapping("/api/auth") // URL base para los endpoints de autenticación y registro
 public class AuthenticationController {
 
     @Autowired
@@ -33,6 +41,10 @@ public class AuthenticationController {
     @Autowired
     private JwtUserDetailsService userDetailsService;
 
+    // Inyectamos el AuthService para manejar la lógica de registro
+    @Autowired
+    private AuthService authService;
+
     /**
      * Endpoint para iniciar sesión y obtener un token JWT.
      * Recibe un JwtRequest con nombre de usuario y contraseña.
@@ -40,7 +52,7 @@ public class AuthenticationController {
      * @return ResponseEntity con el token JWT si la autenticación es exitosa.
      * @throws Exception Si las credenciales son inválidas (usuario deshabilitado o credenciales incorrectas).
      */
-    @PostMapping
+    @PostMapping("/login") // Endpoint específico para autenticación bajo /api/auth
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 
         // Intenta autenticar al usuario con el AuthenticationManager
@@ -73,5 +85,19 @@ public class AuthenticationController {
             // Se lanza si la contraseña no coincide
             throw new Exception("INVALID_CREDENTIALS", e);
         }
+    }
+
+    /**
+     * Endpoint para registrar un nuevo usuario en el sistema.
+     * Recibe un RegisterRequest con el nombre de usuario, contraseña y email del nuevo usuario.
+     * Realiza validaciones en el DTO de entrada.
+     * @param registerRequest DTO que contiene los datos del nuevo usuario a registrar.
+     * @return ResponseEntity con un mensaje de éxito si el usuario se registra correctamente.
+     * Retorna un conflicto (409) si el nombre de usuario o email ya están en uso, manejado globalmente.
+     */
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
+        authService.registerUser(registerRequest); // Llama al servicio de autenticación para el registro
+        return ResponseEntity.status(HttpStatus.CREATED).body("Usuario registrado exitosamente."); // 201 Created
     }
 }

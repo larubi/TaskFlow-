@@ -30,8 +30,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
-    /*
-  Este método es donde se implementa la lógica del filtro
+    /* Este método es donde se implementa la lógica del filtro
 Obtiene el encabezado Authorization de la solicitud.
 Comprueba si el encabezado existe y empieza con "Bearer ".
 Extrae el token real y, usando JwtTokenUtil, intenta obtener el nombre de usuario.

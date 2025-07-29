@@ -1,46 +1,29 @@
 package com.tuproyecto.gestiontareas.TaskFlow.service;
 
-
-import org.springframework.security.core.userdetails.User;
+import com.tuproyecto.gestiontareas.TaskFlow.model.User; // Asegúrate de importar tu clase User
+import com.tuproyecto.gestiontareas.TaskFlow.repository.UserRepository; // Importar UserRepository
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList; // No necesario, pero lo dejo por si acaso
+import java.util.Collections; // Para Collections.emptyList() si no hay roles
 
-/**
- * Servicio de detalles de usuario para la autenticación JWT.
- */
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
 
-    private final PasswordEncoder bcryptEncoder; // Se inyectará el PasswordEncoder configurarado en SecurityConfig
+    @Autowired
+    private UserRepository userRepository; // Inyectamos el UserRepository
 
-    // Inyección de dependencia a través del constructor
-    public JwtUserDetailsService(PasswordEncoder bcryptEncoder) {
-        this.bcryptEncoder = bcryptEncoder;
-    }
-
-    /**
-     * Carga los detalles del usuario por nombre de usuario.
-
-     * @param username El nombre de usuario.
-     * @return UserDetails del usuario.
-     * @throws UsernameNotFoundException Si el usuario no se encuentra.
-     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // Busca el usuario en la base de datos usando el UserRepository
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con username: " + username));
 
-        // La contraseña "password" se codificará usando bcryptEncoder.
-        if ("user".equals(username)) {
-            return User.withUsername("user")
-                    .password(bcryptEncoder.encode("password")) // Usa el encoder inyectado
-                    .roles("USER")
-                    .build();
-        } else {
-            throw new UsernameNotFoundException("Usuario no encontrado con nombre de usuario: " + username);
-        }
+        // Retorna el objeto User (que implementa UserDetails)
+        return user;
     }
 }
